@@ -1,0 +1,30 @@
+# SKuytov Photography - Security Rules
+
+# Prevent directory listing
+Options -Indexes
+
+# Protect sensitive directories
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Block access to includes directory
+    RewriteRule ^includes/ - [F,L]
+    
+    # Block access to db directory
+    RewriteRule ^db/ - [F,L]
+</IfModule>
+
+# Protect .sql files
+<FilesMatch "\.sql$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Cache images
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/webp "access plus 1 month"
+    ExpiresByType text/css "access plus 1 week"
+</IfModule>
