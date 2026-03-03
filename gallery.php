@@ -20,6 +20,8 @@ $photos = $db->fetchAll(
     "SELECT * FROM photos WHERE session_id = ? ORDER BY sort_order ASC, id ASC",
     [$sessionId]
 );
+
+$downloadAllUrl = defined('DOWNLOAD_ALL_URL') ? trim(DOWNLOAD_ALL_URL) : '';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -48,8 +50,8 @@ $photos = $db->fetchAll(
                     </p>
                 </div>
                 <div class="header-actions">
-                    <?php if ($session['downloads_enabled'] && count($photos) > 0): ?>
-                        <a href="download.php?all=1" class="btn btn-outline">
+                    <?php if ($session['downloads_enabled'] && count($photos) > 0 && $downloadAllUrl !== ''): ?>
+                        <a href="<?= htmlspecialchars($downloadAllUrl, ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline" target="_blank" rel="noopener noreferrer">
                             <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                             Download All
                         </a>

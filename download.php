@@ -36,33 +36,11 @@ if (isset($_GET['id'])) {
     exit;
 }
 
-// Download all photos as ZIP
+// Download all photos: redirect to OneDrive/SharePoint URL (no ZIP creation)
 if (isset($_GET['all'])) {
-    $photos = $db->fetchAll("SELECT * FROM photos WHERE session_id = ?", [$sessionId]);
-    if (empty($photos)) {
-        header('Location: gallery.php');
-        exit;
-    }
-
-    $zipName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $session['title']) . '.zip';
-    $zipPath = sys_get_temp_dir() . '/' . uniqid('gallery_') . '.zip';
-
-    $zip = new ZipArchive();
-    if ($zip->open($zipPath, ZipArchive::CREATE) === TRUE) {
-        foreach ($photos as $photo) {
-            $filepath = UPLOAD_DIR . $photo['filename'];
-            if (file_exists($filepath)) {
-                $zip->addFile($filepath, $photo['original_name']);
-            }
-        }
-        $zip->close();
-
-        header('Content-Type: application/zip');
-        header('Content-Disposition: attachment; filename="' . $zipName . '"');
-        header('Content-Length: ' . filesize($zipPath));
-        header('Cache-Control: no-cache');
-        readfile($zipPath);
-        unlink($zipPath);
+    $downloadAllUrl = defined('DOWNLOAD_ALL_URL') ? trim(DOWNLOAD_ALL_URL) : '';
+    if ($downloadAllUrl !== '') {
+        header('Location: ' . $downloadAllUrl);
         exit;
     }
 

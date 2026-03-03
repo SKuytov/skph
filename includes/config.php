@@ -13,6 +13,10 @@ define('DB_PASS', 'your_database_pass');  // Change this
 // Site Configuration
 define('SITE_NAME', 'SKuytov Photography');
 define('SITE_URL', 'https://yourdomain.com');  // Change this to your actual domain
+
+// If you want the "Download All" button to go to OneDrive/SharePoint (instead of ZIP generation), set this URL:
+define('DOWNLOAD_ALL_URL', 'https://skuytovphotography-my.sharepoint.com/:u:/g/personal/s_kuytov_skuytov_eu/IQCHVl1GbmW-T6M5JjMRBGIaAdOR8R4SDIAlPkrmAG1o1uY?e=oBFFox');
+
 define('UPLOAD_DIR', __DIR__ . '/../uploads/');
 define('THUMB_DIR', __DIR__ . '/../uploads/thumbnails/');
 define('MAX_UPLOAD_SIZE', 20 * 1024 * 1024); // 20MB per photo
