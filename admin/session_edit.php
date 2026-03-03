@@ -17,13 +17,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $description = trim($_POST['description'] ?? '');
     $downloadsEnabled = isset($_POST['downloads_enabled']) ? 1 : 0;
     $isActive = isset($_POST['is_active']) ? 1 : 0;
+    $externalDownloadUrl = trim($_POST['external_download_url'] ?? '');
 
     if (empty($title) || empty($clientName)) {
         $error = 'Title and client name are required.';
     } else {
         $db->execute(
-            "UPDATE sessions SET title=?, client_name=?, client_email=?, session_date=?, description=?, downloads_enabled=?, is_active=? WHERE id=?",
-            [$title, $clientName, $clientEmail ?: null, $sessionDate ?: null, $description ?: null, $downloadsEnabled, $isActive, $id]
+            "UPDATE sessions SET title=?, client_name=?, client_email=?, session_date=?, description=?, downloads_enabled=?, is_active=?, external_download_url=? WHERE id=?",
+            [$title, $clientName, $clientEmail ?: null, $sessionDate ?: null, $description ?: null, $downloadsEnabled, $isActive, $externalDownloadUrl ?: null, $id]
         );
         flashMessage('Session updated successfully.');
         header('Location: index.php');
@@ -83,6 +84,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="form-group">
                 <label for="description">Description</label>
                 <textarea id="description" name="description" rows="3"><?= sanitize($session['description'] ?? '') ?></textarea>
+            </div>
+            <div class="form-group">
+                <label for="external_download_url">Custom "Download All" URL (optional)</label>
+                <input type="url" id="external_download_url" name="external_download_url"
+                       placeholder="https://drive.google.com/... or https://onedrive.live.com/..."
+                       value="<?= sanitize($session['external_download_url'] ?? '') ?>">
+                <small class="text-muted" style="display: block; margin-top: 4px; color: #6b7280;">If set, clients will be redirected to this URL when clicking "Download All" instead of generating a ZIP.</small>
             </div>
             <div class="form-group">
                 <label class="checkbox-label">
