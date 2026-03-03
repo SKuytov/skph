@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sessionDate = $_POST['session_date'] ?? null;
     $description = trim($_POST['description'] ?? '');
     $downloadsEnabled = isset($_POST['downloads_enabled']) ? 1 : 0;
+    $externalDownloadUrl = trim($_POST['external_download_url'] ?? '');
 
     if (empty($title) || empty($clientName)) {
         $error = 'Title and client name are required.';
@@ -22,9 +23,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } while ($exists);
 
         $db->insert(
-            "INSERT INTO sessions (title, client_name, client_email, access_code, session_date, description, downloads_enabled) 
-             VALUES (?, ?, ?, ?, ?, ?, ?)",
-            [$title, $clientName, $clientEmail ?: null, $accessCode, $sessionDate ?: null, $description ?: null, $downloadsEnabled]
+            "INSERT INTO sessions (title, client_name, client_email, access_code, session_date, description, downloads_enabled, external_download_url) 
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            [$title, $clientName, $clientEmail ?: null, $accessCode, $sessionDate ?: null, $description ?: null, $downloadsEnabled, $externalDownloadUrl ?: null]
         );
 
         flashMessage("Session created! Access code: <strong>$accessCode</strong>");
@@ -93,6 +94,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="description">Description (visible to client)</label>
                 <textarea id="description" name="description" rows="3" 
                           placeholder="Optional note for the client..."><?= sanitize($_POST['description'] ?? '') ?></textarea>
+            </div>
+            <div class="form-group">
+                <label for="external_download_url">Custom "Download All" URL (optional)</label>
+                <input type="url" id="external_download_url" name="external_download_url"
+                       placeholder="https://drive.google.com/... or https://onedrive.live.com/..."
+                       value="<?= sanitize($_POST['external_download_url'] ?? '') ?>">
+                <small class="text-muted" style="display: block; margin-top: 4px; color: #6b7280;">If set, the "Download All" button will open this link instead of generating a ZIP file.</small>
             </div>
             <div class="form-group">
                 <label class="checkbox-label">
